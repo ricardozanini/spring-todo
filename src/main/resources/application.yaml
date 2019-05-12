@@ -1,0 +1,12 @@
+spring:
+  profiles: eap-persistent
+  datasource:
+    jndi-name: ${TODO_JNDI:-java:/jboss/datasources/todo}
+---
+spring:
+  h2:
+   console:
+    enabled: true
+  jpa:
+   database-platform: org.hibernate.dialect.H2Dialect
+   generate-ddl: false
