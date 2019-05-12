@@ -1,4 +1,4 @@
-Based on the original work of [maximilianschreiber(https://github.com/maximilianschreiber/spring-todo)
+Based on the original work of [maximilianschreiber](https://github.com/maximilianschreiber/spring-todo)
 
 # spring-todo
 Simple Todo App with Spring MVC, Hibernate, H2, Flyway DB and Thymeleaf on OpenShift
