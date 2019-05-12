@@ -1,0 +1,249 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  annotations:
+    iconClass: icon-spring
+    tags: spring-boot,todo
+    version: "1.0"
+    openshift.io/display-name: Spring Boot MVC Todo Application (Jboss EAP, H2, persistent)
+    openshift.io/provider-display-name: Ricardo Zanini
+    description: Application template for Todo Application with Spring Boot MVC and H2 persistent database
+    template.openshift.io/documentation-url: https://github.com/ricardozanini/spring-todo
+    template.openshift.io/support-url: https://github.com/ricardozanini/spring-todo
+    template.openshift.io/bindable: "false"
+  name: springboot-eap-persistent
+labels:
+  template: springboot-eap-persistent
+message: |-
+          A new Todo Application with Spring MVC on JBoss EAP has been created in your project.
+          The database user is ${TODO_H2_USER} and the password is ${TODO_H2_PWD}.
+parameters:
+- displayName: Application Name
+  description: The name for the application.
+  name: APPLICATION_NAME
+  value: todoapp
+  required: true
+- displayName: Todo App H2 Database User
+  description: Todo App H2 database username.
+  name: TODO_H2_USER
+  value: sa
+  required: true
+- displayName: Todo App H2 Database Password
+  description: Todo App H2 database password.
+  name: TODO_H2_PWD
+  from: "[a-zA-Z]{6}[0-9]{1}!"
+  generate: expression
+  required: true
+- displayName: Todo App Persistence DS
+  description: Todo App persistence datasource. (Sets the spring.datasource.jndi-name system property)
+  name: TODO_PERSISTENCE_DS
+  value: java:/jboss/datasources/todo
+  required: true
+- displayName: Database Volume Capacity
+  description: Size of persistent storage for the database volume.
+  name: DB_VOLUME_CAPACITY
+  value: 30Mi
+  required: true
+- displayName: Git Repository URL
+  description: Git source URI for application
+  name: SOURCE_REPOSITORY_URL
+  value: https://github.com/ricardozanini/spring-todo.git
+  required: true
+- displayName: SOURCE_REPOSITORY_REF
+  description: Git Reference
+  name: SOURCE_REPOSITORY_REF
+  value: master
+  required: true
+- displayName: Context Directory
+  description: Path within Git project to build; empty for root project directory.
+  name: CONTEXT_DIR
+  value: 
+  required: false
+- displayName: ImageStream Namespace
+  description: Namespace in which the ImageStreams for Red Hat Middleware images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.
+  name: IMAGE_STREAM_NAMESPACE
+  value: openshift
+  required: true
+objects:
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      application: "${APPLICATION_NAME}"
+      app: "${APPLICATION_NAME}"
+- kind: Service
+  apiVersion: v1
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+    selector:
+      deploymentConfig: "${APPLICATION_NAME}"
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      application: "${APPLICATION_NAME}"
+      app: "${APPLICATION_NAME}"
+      service: "${APPLICATION_NAME}"
+    annotations:
+      description: Todo App web server's ports.
+- kind: Route
+  apiVersion: v1
+  id: "${APPLICATION_NAME}"
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      application: "${APPLICATION_NAME}"
+      app: "${APPLICATION_NAME}"
+      service: "${APPLICATION_NAME}"
+    annotations:
+      description: Route for Todo App's http service.
+      haproxy.router.openshift.io/timeout: 60s
+  spec:
+    to:
+      name: "${APPLICATION_NAME}"
+    port:
+      targetPort: http
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      app: "${APPLICATION_NAME}"
+      application: "${APPLICATION_NAME}"
+  spec:
+    source:
+      type: Git
+      git:
+        uri: "${SOURCE_REPOSITORY_URL}"
+        ref: "${SOURCE_REPOSITORY_REF}"
+      contextDir: "${CONTEXT_DIR}"
+    strategy:
+      type: Source
+      sourceStrategy:
+        forcePull: true
+        incremental: true
+        from:
+          kind: "ImageStreamTag"
+          namespace: "${IMAGE_STREAM_NAMESPACE}"
+          name: "jboss-eap72-openshift:1.0"
+    output:
+      to: 
+        kind: "ImageStreamTag"
+        name: "${APPLICATION_NAME}:latest"
+    triggers:
+      - type: "ImageChange"
+        imageChage:
+      - type: "ConfigChange"
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      app: "${APPLICATION_NAME}"
+      application: "${APPLICATION_NAME}"
+      service: "${APPLICATION_NAME}"
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+  spec:
+    strategy:
+      type: Recreate
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APPLICATION_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APPLICATION_NAME}:latest"
+    - type: ConfigChange
+    replicas: 1
+    selector:
+      deploymentConfig: "${APPLICATION_NAME}"
+    template:
+      metadata:
+        name: "${APPLICATION_NAME}"
+        labels:
+          deploymentConfig: "${APPLICATION_NAME}"
+          application: "${APPLICATION_NAME}"
+          service: "${APPLICATION_NAME}"
+      spec:
+        terminationGracePeriodSeconds: 60
+        containers:
+        - name: "${APPLICATION_NAME}"
+          image: "${APPLICATION_NAME}:latest"
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: "${APPLICATION_NAME}-h2-pvol"
+            mountPath: "/opt/eap/standalone/data"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 2
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 2
+            periodSeconds: 30
+            failureThreshold: 6
+          ports:
+          - name: jolokia
+            containerPort: 8778
+            protocol: TCP
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+          env:
+          - name: APPLICATION_NAME
+            value: "${APPLICATION_NAME}"
+          - name: DATASOURCES
+            value: "TODO"
+          - name: TODO_DATABASE
+            value: "todo"
+          - name: TODO_JNDI
+            value: "${TODO_PERSISTENCE_DS}"
+          - name: TODO_JTA
+            value: "true"
+          - name: TODO_DRIVER
+            value: "h2"
+          - name: TODO_USERNAME
+            value: "${TODO_H2_USER}"
+          - name: TODO_PASSWORD
+            value: "${TODO_H2_PWD}"
+          - name: TODO_XA_CONNECTION_PROPERTY_URL
+            value: "jdbc:h2:/opt/eap/standalone/data/todo"
+          - name: TODO_SERVICE_HOST
+            value: "dummy_ignored"
+          - name: TODO_SERVICE_PORT
+            value: "12345"
+          - name: SPRING_PROFILES_ACTIVE
+            value: "eap-persistent"
+        volumes:
+        - name: "${APPLICATION_NAME}-h2-pvol"
+          persistentVolumeClaim:
+            claimName: "${APPLICATION_NAME}-h2-claim"
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: "${APPLICATION_NAME}-h2-claim"
+    labels:
+      app: "${APPLICATION_NAME}"
+      application: "${APPLICATION_NAME}"
+      service: "${APPLICATION_NAME}"
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "${DB_VOLUME_CAPACITY}"
