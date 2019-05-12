@@ -5,7 +5,7 @@ Simple Todo App with Spring MVC, Hibernate, H2, Flyway DB and Thymeleaf on OpenS
 
 ## H2 Database Console
 
-The H2 database console is enabled by default, just go to http://localhost:8080/h2-console and use the following parameters to connect to the in-memory instance:
+The [H2 database console](https://medium.com/@harittweets/how-to-connect-to-h2-database-during-development-testing-using-spring-boot-44bbb287570) is enabled by default, just go to http://localhost:8080/h2-console and use the following parameters to connect to the in-memory instance:
 
 ```
 JDBC URL: jdbc:h2:mem:testdb
