@@ -29,6 +29,10 @@
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <exclusions>
         <exclusion>
@@ -70,53 +74,20 @@
       <artifactId>h2</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.validator</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>javax.transaction-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jul-to-slf4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-to-slf4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    -->
+    <!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> 
+      <scope>provided</scope> </dependency> <dependency> <groupId>org.hibernate.validator</groupId> 
+      <artifactId>hibernate-validator</artifactId> <scope>provided</scope> </dependency> 
+      <dependency> <groupId>javax.transaction</groupId> <artifactId>javax.transaction-api</artifactId> 
+      <scope>provided</scope> </dependency> <dependency> <groupId>javax.xml.bind</groupId> 
+      <artifactId>jaxb-api</artifactId> <scope>provided</scope> </dependency> <dependency> 
+      <groupId>javax.annotation</groupId> <artifactId>javax.annotation-api</artifactId> 
+      <scope>provided</scope> </dependency> <dependency> <groupId>org.slf4j</groupId> 
+      <artifactId>slf4j-api</artifactId> <scope>provided</scope> </dependency> 
+      <dependency> <groupId>org.slf4j</groupId> <artifactId>jul-to-slf4j</artifactId> 
+      <scope>provided</scope> </dependency> <dependency> <groupId>org.apache.logging.log4j</groupId> 
+      <artifactId>log4j-to-slf4j</artifactId> <scope>provided</scope> </dependency> 
+      <dependency> <groupId>ch.qos.logback</groupId> <artifactId>logback-classic</artifactId> 
+      <scope>provided</scope> </dependency> -->
   </dependencies>
   <profiles>
     <profile>
@@ -127,6 +98,20 @@
     </profile>
     <profile>
       <id>openshift</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>${maven-war-plugin.version}</version>
+            <configuration>
+              <failOnMissingWebXml>false</failOnMissingWebXml>
+              <outputDirectory>deployments</outputDirectory>
+              <warName>ROOT</warName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
   <build>
