@@ -3,6 +3,23 @@ Based on the original work of [maximilianschreiber](https://github.com/maximilia
 # spring-todo
 Simple Todo App with Spring MVC, Hibernate, H2, Flyway DB and Thymeleaf on OpenShift
 
+## Running on OpenShift
+
+There are a couple of templates available to run 
+
+### Spring Boot H2 Persistent
+
+This template will deploy the Todo Application with a H2 embedded database with a persistent storage:
+
+```shell
+git clone git@github.com:ricardozanini/spring-todo.git
+cd spring-todo
+oc new-project todo
+oc create -f openshift/springboot-eap-h2-persistent.yaml
+oc new-app springboot-eap-h2-persistent
+```
+So it doesn't matter if you 
+
 ## H2 Database Console
 
 The [H2 database console](https://medium.com/@harittweets/how-to-connect-to-h2-database-during-development-testing-using-spring-boot-44bbb287570) is enabled by default, just go to http://localhost:8080/h2-console and use the following parameters to connect to the in-memory instance:
