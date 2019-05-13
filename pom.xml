@@ -93,7 +93,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <build>
-        <finalName>${project.name}</finalName>
+        <finalName>spring-todo</finalName>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
