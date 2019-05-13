@@ -12,9 +12,9 @@ metadata:
     template.openshift.io/documentation-url: https://github.com/ricardozanini/spring-todo
     template.openshift.io/support-url: https://github.com/ricardozanini/spring-todo
     template.openshift.io/bindable: "false"
-  name: springboot-eap-persistent
+  name: springboot-eap-h2-persistent
 labels:
-  template: springboot-eap-persistent
+  template: springboot-eap-h2-persistent
 message: |-
           A new Todo Application with Spring MVC on JBoss EAP has been created in your project.
           The database user is ${TODO_H2_USER} and the password is ${TODO_H2_PWD}.
@@ -222,7 +222,7 @@ objects:
           - name: TODO_PASSWORD
             value: "${TODO_H2_PWD}"
           - name: TODO_XA_CONNECTION_PROPERTY_URL
-            value: "jdbc:h2:/opt/eap/standalone/data/todo"
+            value: "jdbc:h2:file:/opt/eap/standalone/data/todo;AUTO_SERVER=TRUE"
           - name: TODO_SERVICE_HOST
             value: "dummy_ignored"
           - name: TODO_SERVICE_PORT
