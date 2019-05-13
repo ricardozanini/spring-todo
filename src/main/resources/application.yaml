@@ -1,13 +1,15 @@
 spring:
   profiles: eap-persistent
   datasource:
-    jndi-name: ${TODO_JNDI:-java:/jboss/datasources/todo}
+    jndi-name: ${TODO_JNDI}
 ---
 spring:
   profiles: default
   datasource:
     url: jdbc:h2:${user.home}/todo;AUTO_SERVER=TRUE;
 ---
+server:
+  port: ${SERVER_PORT}
 spring:
   profiles: persistent
   datasource:
@@ -15,8 +17,6 @@ spring:
     username: ${TODO_USERNAME}
     password: ${TODO_PASSWORD}
 ---
-server:
-  port: ${SERVER_PORT:-8080}
 spring:
   h2:
    console:
