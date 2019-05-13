@@ -182,7 +182,7 @@ objects:
           imagePullPolicy: Always
           volumeMounts:
           - name: "${APPLICATION_NAME}-h2-pvol"
-            mountPath: "/opt/eap/standalone/data"
+            mountPath: "/opt/eap/standalone/db"
           livenessProbe:
             httpGet:
               path: /actuator/health
@@ -225,7 +225,7 @@ objects:
           - name: TODO_PASSWORD
             value: "${TODO_H2_PWD}"
           - name: TODO_URL
-            value: "jdbc:h2:/opt/eap/standalone/data/todo;AUTO_SERVER=TRUE"
+            value: "jdbc:h2:/opt/eap/standalone/db/todo;AUTO_SERVER=TRUE"
           - name: TODO_NONXA
             value: "true"
           - name: TODO_SERVICE_HOST
