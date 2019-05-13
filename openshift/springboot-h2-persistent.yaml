@@ -214,9 +214,11 @@ objects:
           - name: TODO_PASSWORD
             value: "${TODO_H2_PWD}"
           - name: TODO_DATABASE_URL
-            value: jdbc:h2:/deployments/data/${TODO_DATABASE};AUTO_SERVER=TRUE;
+            value: jdbc:h2:/deployments/data/todo;AUTO_SERVER=TRUE;
           - name: SPRING_PROFILES_ACTIVE
             value: "persistent"
+          - name: JAVA_APP_JAR
+            value: spring-todo.war
         volumes:
         - name: "${APPLICATION_NAME}-h2-pvol"
           persistentVolumeClaim:

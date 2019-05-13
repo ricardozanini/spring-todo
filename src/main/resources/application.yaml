@@ -11,7 +11,7 @@ spring:
 spring:
   profiles: persistent
   datasource:
-    url: ${TODO_URL}
+    url: ${TODO_DATABASE_URL}
     username: ${TODO_USERNAME}
     password: ${TODO_PASSWORD}
 ---
