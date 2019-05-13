@@ -220,7 +220,7 @@ objects:
           - name: JAVA_APP_JAR
             value: spring-todo.war
           - name: SERVER_PORT
-            value: 8080
+            value: "8080"
         volumes:
         - name: "${APPLICATION_NAME}-h2-pvol"
           persistentVolumeClaim:

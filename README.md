@@ -12,7 +12,7 @@ There are a couple of templates available to run
 This template will deploy the Todo Application in a JBoss EAP image with a H2 embedded database with a persistent storage:
 
 ```shell
-git clone git@github.com:ricardozanini/spring-todo.git
+git clone https://github.com/ricardozanini/spring-todo.git
 cd spring-todo
 oc new-project todo
 oc create -f openshift/springboot-eap-h2-persistent.yaml
@@ -25,7 +25,7 @@ So it doesn't matter if you kill your pod, the Todo data will be persisted in yo
 Will deploy the application into a Java Image with Red Hat OpenJDK 1.8. This means no JEE container:
 
 ```shell
-git clone git@github.com:ricardozanini/spring-todo.git
+git clone https://github.com/ricardozanini/spring-todo.git
 cd spring-todo
 oc new-project todo
 oc create -f openshift/springboot-h2-persistent.yaml
