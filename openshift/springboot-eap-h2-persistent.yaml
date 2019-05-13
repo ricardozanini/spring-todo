@@ -224,8 +224,10 @@ objects:
             value: "${TODO_H2_USER}"
           - name: TODO_PASSWORD
             value: "${TODO_H2_PWD}"
-          - name: TODO_XA_CONNECTION_PROPERTY_URL
+          - name: TODO_URL
             value: "jdbc:h2:/opt/eap/standalone/data/todo;AUTO_SERVER=TRUE"
+          - name: TODO_NONXA
+            value: "true"
           - name: TODO_SERVICE_HOST
             value: "dummy_ignored"
           - name: TODO_SERVICE_PORT
