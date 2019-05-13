@@ -7,9 +7,9 @@ Simple Todo App with Spring MVC, Hibernate, H2, Flyway DB and Thymeleaf on OpenS
 
 There are a couple of templates available to run 
 
-### Spring Boot H2 Persistent
+### Spring Boot on EAP with H2 Persistent
 
-This template will deploy the Todo Application with a H2 embedded database with a persistent storage:
+This template will deploy the Todo Application in a JBoss EAP image with a H2 embedded database with a persistent storage:
 
 ```shell
 git clone git@github.com:ricardozanini/spring-todo.git
@@ -18,7 +18,9 @@ oc new-project todo
 oc create -f openshift/springboot-eap-h2-persistent.yaml
 oc new-app springboot-eap-h2-persistent
 ```
-So it doesn't matter if you 
+So it doesn't matter if you kill your pod, the Todo data will be persisted in your cluster storage.
+
+### Spring Boot 
 
 ## H2 Database Console
 

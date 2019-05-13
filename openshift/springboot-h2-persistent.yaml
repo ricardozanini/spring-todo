@@ -6,17 +6,17 @@ metadata:
     iconClass: icon-spring
     tags: spring-boot,todo
     version: "1.0"
-    openshift.io/display-name: Spring Boot MVC Todo Application (Jboss EAP, H2, persistent)
+    openshift.io/display-name: Spring Boot MVC Todo Application (H2, persistent)
     openshift.io/provider-display-name: Ricardo Zanini
     description: Application template for Todo Application with Spring Boot MVC and H2 persistent database
     template.openshift.io/documentation-url: https://github.com/ricardozanini/spring-todo
     template.openshift.io/support-url: https://github.com/ricardozanini/spring-todo
     template.openshift.io/bindable: "false"
-  name: springboot-eap-h2-persistent
+  name: springboot-h2-persistent
 labels:
-  template: springboot-eap-h2-persistent
+  template: springboot-h2-persistent
 message: |-
-          A new Todo Application with Spring MVC on JBoss EAP has been created in your project.
+          A new Todo Application with Spring MVC has been created in your project.
           The database user is ${TODO_H2_USER} and the password is ${TODO_H2_PWD}.
 parameters:
 - displayName: Application Name
@@ -34,11 +34,6 @@ parameters:
   name: TODO_H2_PWD
   from: "[a-zA-Z]{6}[0-9]{1}!"
   generate: expression
-  required: true
-- displayName: Todo App Persistence DS
-  description: Todo App persistence datasource. (Sets the spring.datasource.jndi-name system property)
-  name: TODO_PERSISTENCE_DS
-  value: java:/jboss/datasources/todo
   required: true
 - displayName: Database Volume Capacity
   description: Size of persistent storage for the database volume.
@@ -129,7 +124,7 @@ objects:
         from:
           kind: "ImageStreamTag"
           namespace: "${IMAGE_STREAM_NAMESPACE}"
-          name: "jboss-eap72-openshift:1.0"
+          name: "redhat-openjdk18-openshift:1.6"
     output:
       to: 
         kind: "ImageStreamTag"
@@ -179,7 +174,7 @@ objects:
           imagePullPolicy: Always
           volumeMounts:
           - name: "${APPLICATION_NAME}-h2-pvol"
-            mountPath: "/opt/eap/standalone/data"
+            mountPath: "/deployments/data"
           livenessProbe:
             httpGet:
               path: /actuator/health
@@ -207,28 +202,16 @@ objects:
           env:
           - name: APPLICATION_NAME
             value: "${APPLICATION_NAME}"
-          - name: DATASOURCES
-            value: "TODO"
           - name: TODO_DATABASE
             value: "todo"
-          - name: TODO_JNDI
-            value: "${TODO_PERSISTENCE_DS}"
-          - name: TODO_JTA
-            value: "true"
-          - name: TODO_DRIVER
-            value: "h2"
           - name: TODO_USERNAME
             value: "${TODO_H2_USER}"
           - name: TODO_PASSWORD
             value: "${TODO_H2_PWD}"
-          - name: TODO_XA_CONNECTION_PROPERTY_URL
-            value: "jdbc:h2:/opt/eap/standalone/data/todo;AUTO_SERVER=TRUE"
-          - name: TODO_SERVICE_HOST
-            value: "dummy_ignored"
-          - name: TODO_SERVICE_PORT
-            value: "12345"
+          - name: TODO_DATABASE_URL
+            value: jdbc:h2:/deployments/data/${TODO_DATABASE};AUTO_SERVER=TRUE;
           - name: SPRING_PROFILES_ACTIVE
-            value: "eap-persistent"
+            value: "persistent"
         volumes:
         - name: "${APPLICATION_NAME}-h2-pvol"
           persistentVolumeClaim:

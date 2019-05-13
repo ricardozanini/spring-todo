@@ -4,6 +4,20 @@ spring:
     jndi-name: ${TODO_JNDI:-java:/jboss/datasources/todo}
 ---
 spring:
+  profiles: default
+  datasource:
+    url: jdbc:h2:${user.home}/todo;AUTO_SERVER=TRUE;
+---
+spring:
+  profiles: persistent
+  datasource:
+    url: ${TODO_URL}
+    username: ${TODO_USERNAME}
+    password: ${TODO_PASSWORD}
+---
+server:
+  port: ${SERVER_PORT:-8080}
+spring:
   h2:
    console:
     enabled: true
