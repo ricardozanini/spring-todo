@@ -5,7 +5,7 @@ Simple Todo App with Spring MVC, Hibernate, H2, Flyway DB and Thymeleaf on OpenS
 
 ## Running on OpenShift
 
-There are a couple of templates available to run. With the peristent ones, you can scale your pods at will or kill them completely and then scale up again. Your data you be kept untouched, persisted and shared between pods.
+There are a couple templates available to run. With the peristent ones, you can scale your pods at will or kill them completely and then scale up again. Your data you be kept untouched, persisted and shared between pods.
 
 ### Spring Boot on EAP with H2 Persistent Storage
 
