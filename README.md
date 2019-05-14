@@ -5,7 +5,7 @@ Simple Todo App with Spring MVC, Hibernate, H2, Flyway DB and Thymeleaf on OpenS
 
 ## Running on OpenShift
 
-There are a couple of templates available to run 
+There are a couple of templates available to run. With the peristent ones, you can scale your pods at will or kill them completely and then scale up again. Your data you be kept untouched, persisted and shared between pods.
 
 ### Spring Boot on EAP with H2 Persistent Storage
 
@@ -18,11 +18,10 @@ oc new-project todo
 oc create -f openshift/springboot-eap-h2-persistent.yaml
 oc new-app springboot-eap-h2-persistent
 ```
-So it doesn't matter if you kill your pod, the Todo data will be persisted in your cluster storage.
 
 ### Spring Boot with H2 Persistent Storage
 
-Will deploy the application into a Java Image with Red Hat OpenJDK 1.8. This means no JEE container:
+Deploy the application into a Java Image with Red Hat OpenJDK 1.8. This means no JEE container:
 
 ```shell
 git clone https://github.com/ricardozanini/spring-todo.git
@@ -31,8 +30,6 @@ oc new-project todo
 oc create -f openshift/springboot-h2-persistent.yaml
 oc new-app springboot-h2-persistent
 ```
-
-You can scale your pods at will or kill them completely and then scale up again. Your data you be kept untouched, persisted and shared between pods.
 
 ## H2 Database Console
 
@@ -44,7 +41,7 @@ User Name: sa
 Pasword: <leave this empty>
 ```
 
-When running on OpenShift using the persistent template, change the URL to:
+When running on OpenShift, change the URL to:
 
 ```
 JDBC URL: jdbc:h2:/deployments/data/todo
