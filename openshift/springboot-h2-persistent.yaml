@@ -122,8 +122,6 @@ objects:
         env:
           - name: S2I_SOURCE_DEPLOYMENTS_FILTER
             value: '*.war'
-          - name: MAVEN_ARGS_APPEND
-            value: "-Pstandalone-openshift"
         forcePull: true
         incremental: true
         from:
