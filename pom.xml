@@ -88,7 +88,7 @@
   </dependencies>
   <profiles>
     <profile>
-      <id>standalone-openshift</id>
+      <id>openshift</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
